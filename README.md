@@ -43,6 +43,10 @@ Build-Prompts unter [`prompts/`](prompts/).
 - LilyGO **T-Deck v1** (ESP32-S3, 16 MB Flash, 8 MB PSRAM, 2,8" 320×240 Touch, Tastatur, Trackball)
 - Nur WLAN, kein LoRa erforderlich
 
+## Mitmachen
+
+Siehe [`CONTRIBUTING.md`](CONTRIBUTING.md). Sicherheitsprobleme bitte wie in [`SECURITY.md`](SECURITY.md) melden.
+
 ## Lizenz
 
 - Code: [MIT](LICENSE)

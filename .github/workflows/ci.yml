@@ -1,0 +1,91 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  # A module job runs only if its paths changed and the module has content.
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      aggregator: ${{ steps.result.outputs.aggregator }}
+      firmware: ${{ steps.result.outputs.firmware }}
+      schemas: ${{ steps.result.outputs.schemas }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            aggregator:
+              - 'aggregator/**'
+              - '.github/workflows/ci.yml'
+            firmware:
+              - 'firmware/**'
+              - 'schemas/**'
+              - '.github/workflows/ci.yml'
+            schemas:
+              - 'schemas/**'
+              - 'aggregator/**'
+              - '.github/workflows/ci.yml'
+      - id: result
+        env:
+          AGGREGATOR: ${{ steps.filter.outputs.aggregator }}
+          FIRMWARE: ${{ steps.filter.outputs.firmware }}
+          SCHEMAS: ${{ steps.filter.outputs.schemas }}
+        run: |
+          emit() { # name, changed, marker file
+            if [[ "$2" == "true" && -f "$3" ]]; then echo "$1=true"; else echo "$1=false"; fi >> "$GITHUB_OUTPUT"
+          }
+          emit aggregator "$AGGREGATOR" aggregator/pyproject.toml
+          emit firmware "$FIRMWARE" firmware/CMakeLists.txt
+          emit schemas "$SCHEMAS" aggregator/pyproject.toml
+
+  aggregator:
+    needs: changes
+    if: needs.changes.outputs.aggregator == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: aggregator
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.4.0
+        with:
+          python-version: "3.12"
+      - run: uv sync --locked
+      - run: uv run ruff check
+      - run: uv run ruff format --check
+      - run: uv run mypy --strict src
+      - run: uv run pytest
+
+  firmware:
+    needs: changes
+    if: needs.changes.outputs.firmware == 'true'
+    runs-on: ubuntu-latest
+    container: espressif/idf:release-v5.5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build
+        shell: bash
+        working-directory: firmware
+        run: |
+          . "$IDF_PATH/export.sh"
+          idf.py set-target esp32s3
+          idf.py build
+
+  schemas:
+    needs: changes
+    if: needs.changes.outputs.schemas == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Drift check (placeholder)
+        run: echo "Schema drift check is enabled in phase 02."

@@ -1,0 +1,51 @@
+name: Fehler
+description: Etwas funktioniert nicht wie erwartet
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Bitte keine Passwörter, Tokens oder WLAN-Daten posten, auch nicht in Logs.
+  - type: input
+    id: firmware
+    attributes:
+      label: Firmware-Version
+      placeholder: z. B. 0.1.0 oder Commit-Hash
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Gerät
+      placeholder: z. B. LilyGO T-Deck v1
+    validations:
+      required: true
+  - type: dropdown
+    id: page
+    attributes:
+      label: Seite
+      options:
+        - Uhr
+        - Bandzustand
+        - POTA
+        - DX-Cluster
+        - Mesh
+        - News
+        - Einstellungen
+        - Keine bestimmte Seite
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Was passiert, und was hast du erwartet?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Schritte zum Nachstellen
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      render: text
