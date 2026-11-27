@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: oeradio-cockpit
+resources:
+  - ../mosquitto
+  - namespace.yaml
+  - mosquitto.yaml
+  - aggregator.yaml
+  - cloudflared.yaml
+  - networkpolicies.yaml
+configMapGenerator:
+  - name: aggregator-config
+    literals:
+      - COCKPIT_BROKER_HOST=mqtt-internal
+      - COCKPIT_BROKER_PORT=1883
+      - COCKPIT_BROKER_USER=aggregator
+      # Add "dx" and "mesh" in an overlay once their settings exist (see deploy/README.md).
+      - COCKPIT_SOURCES=solar,pota,news
+images:
+  - name: ghcr.io/achildrenmile/oeradio-cockpit-aggregator
+    newTag: edge

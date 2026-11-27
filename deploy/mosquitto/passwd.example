@@ -1,0 +1,4 @@
+# Structure only, these are not real hashes. Create the real files with:
+#   mosquitto_passwd -c internal.passwd aggregator
+#   mosquitto_passwd -c device.passwd device      (variant B only)
+aggregator:$7$101$<salt-base64>$<hash-base64>

@@ -17,6 +17,7 @@ jobs:
       aggregator: ${{ steps.result.outputs.aggregator }}
       firmware: ${{ steps.result.outputs.firmware }}
       schemas: ${{ steps.result.outputs.schemas }}
+      deploy: ${{ steps.result.outputs.deploy }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -36,11 +37,16 @@ jobs:
               - 'schemas/**'
               - 'aggregator/**'
               - '.github/workflows/ci.yml'
+            deploy:
+              - 'deploy/**'
+              - 'aggregator/**'
+              - '.github/workflows/ci.yml'
       - id: result
         env:
           AGGREGATOR: ${{ steps.filter.outputs.aggregator }}
           FIRMWARE: ${{ steps.filter.outputs.firmware }}
           SCHEMAS: ${{ steps.filter.outputs.schemas }}
+          DEPLOY: ${{ steps.filter.outputs.deploy }}
         run: |
           emit() { # name, changed, marker file
             if [[ "$2" == "true" && -f "$3" ]]; then echo "$1=true"; else echo "$1=false"; fi >> "$GITHUB_OUTPUT"
@@ -48,6 +54,7 @@ jobs:
           emit aggregator "$AGGREGATOR" aggregator/pyproject.toml
           emit firmware "$FIRMWARE" firmware/CMakeLists.txt
           emit schemas "$SCHEMAS" aggregator/pyproject.toml
+          emit deploy "$DEPLOY" deploy/base/kustomization.yaml
 
   aggregator:
     needs: changes
@@ -102,3 +109,24 @@ jobs:
           # Intent-to-add makes new, uncommitted schema files show up in the diff.
           git add --intent-to-add ../schemas
           git diff --exit-code ../schemas
+
+  deploy:
+    needs: changes
+    if: needs.changes.outputs.deploy == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.4.0
+      - name: Validate manifests
+        run: |
+          set -o pipefail
+          kubectl kustomize deploy/base |
+            docker run --rm -i ghcr.io/yannh/kubeconform:v0.8.0 -strict -summary
+      - name: Broker smoke test
+        run: |
+          docker compose -f deploy/compose/docker-compose.yml up -d --build
+          sleep 8
+          MQTT_WRITER_PASSWORD=local-test-only uv run deploy/scripts/ws-smoke.py ws://localhost:9001
+      - name: Logs on failure
+        if: failure()
+        run: docker compose -f deploy/compose/docker-compose.yml logs

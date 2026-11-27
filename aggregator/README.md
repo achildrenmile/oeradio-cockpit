@@ -3,7 +3,7 @@
 Der Python-Dienst `cockpit` publiziert kompaktes JSON per MQTT (retained, QoS 1) nach dem
 [Topic-Vertrag](../docs/mqtt-topics.md), siehe auch [ADR 0002](../docs/adr/0002-python-aggregator.md).
 Quellen: `solar`, `pota`, `dx`, `mesh`, `news` ([Details](docs/sources.md)) und `demo` mit erfundenen Daten.
-Das Container-Image folgt in [Phase 04](../prompts/04-broker-deploy.md).
+Container, Broker und Deployment: [`deploy/`](../deploy/README.md).
 
 ## Lokal starten
 
@@ -47,6 +47,7 @@ Beim Beenden (Strg+C oder SIGTERM) publiziert der Dienst `offline` auf `…/stat
 | `COCKPIT_INTERVAL_MESH` | `30` | Sekunden |
 | `COCKPIT_INTERVAL_NEWS` | `1800` | Sekunden |
 | `COCKPIT_INTERVAL_STATUS` | `30` | Sekunden |
+| `COCKPIT_HEALTH_FILE` | – (Image: `/tmp/cockpit.health`) | Heartbeat für `python -m cockpit healthcheck` |
 | `COCKPIT_MOTD` | – | Kurzmeldung im Status (max. 80 Zeichen) |
 | `COCKPIT_LOG_LEVEL` | `INFO` | `DEBUG`, `INFO`, `WARNING`, `ERROR` |
 | `COCKPIT_SOLAR_URL`, `COCKPIT_POTA_URL`, `COCKPIT_NEWS_URL` | siehe Quellen | Endpunkte |

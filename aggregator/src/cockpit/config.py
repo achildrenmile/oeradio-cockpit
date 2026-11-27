@@ -1,5 +1,6 @@
 """Runtime configuration from ``COCKPIT_*`` environment variables."""
 
+from pathlib import Path
 from typing import Annotated, Literal
 
 from pydantic import Field, SecretStr, field_validator
@@ -104,6 +105,7 @@ class Settings(BaseSettings):
     interval_status: float = Field(default=30, gt=0)
 
     motd: str | None = None
+    health_file: Path | None = None  # touched every status interval
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
 
     @field_validator("sources", "pota_europe", "pota_neighbours", "mesh_channels", mode="before")

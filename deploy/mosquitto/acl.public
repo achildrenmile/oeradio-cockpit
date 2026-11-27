@@ -1,0 +1,10 @@
+# ACL of the public listener 9001. READ ONLY: never add write rules or "pattern" lines.
+# Without anonymous access no password is checked for other user names, so every rule
+# here must be harmless for anyone.
+
+# Anonymous clients
+topic read oeradio/cockpit/#
+
+# Shared device user (variant B)
+user device
+topic read oeradio/cockpit/#

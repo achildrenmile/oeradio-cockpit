@@ -1,0 +1,57 @@
+# Local test only: Mosquitto (production config) plus aggregator with demo data.
+name: oeradio-cockpit
+
+x-dev-password: &dev-password ${COCKPIT_DEV_PASSWORD:-local-test-only}
+
+services:
+  init:
+    image: eclipse-mosquitto:2.1.4-alpine
+    environment:
+      PASSWORD: *dev-password
+    # Mosquitto wants to own its auth files, so copy them into volumes with that owner.
+    command:
+      - sh
+      - -c
+      - >
+        rm -f /config/* /auth/* &&
+        cp /src/mosquitto.conf /src/acl.internal /src/acl.public /config/ &&
+        mosquitto_passwd -c -b /auth/internal.passwd aggregator "$$PASSWORD" &&
+        chown 1883:1883 /config/* /auth/* && chmod 0400 /config/* /auth/*
+    volumes:
+      - ../mosquitto:/src:ro
+      - config:/config
+      - auth:/auth
+
+  mosquitto:
+    image: eclipse-mosquitto:2.1.4-alpine
+    command: ["mosquitto", "-c", "/mosquitto/config/mosquitto.conf"]
+    user: "1883:1883"
+    read_only: true
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    volumes:
+      - config:/mosquitto/config:ro
+      - auth:/mosquitto/auth:ro
+      - data:/mosquitto/data
+    ports:
+      - "127.0.0.1:9001:9001"
+
+  aggregator:
+    build: ../../aggregator
+    image: oeradio-cockpit-aggregator:local
+    read_only: true
+    tmpfs:
+      - /tmp
+    depends_on:
+      - mosquitto
+    environment:
+      COCKPIT_BROKER_HOST: mosquitto
+      COCKPIT_BROKER_USER: aggregator
+      COCKPIT_BROKER_PASSWORD: *dev-password
+      COCKPIT_SOURCES: demo
+
+volumes:
+  config:
+  auth:
+  data:

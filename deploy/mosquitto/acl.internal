@@ -1,0 +1,3 @@
+# ACL of the internal listener 1883. Never use this file for listener 9001.
+user aggregator
+topic readwrite oeradio/cockpit/#

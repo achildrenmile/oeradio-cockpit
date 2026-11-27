@@ -117,6 +117,8 @@ class Publisher:
     def _default_client(self, will: aiomqtt.Will) -> AbstractAsyncContextManager[MqttClient]:
         settings = self._settings
         password = settings.broker_password
+        # No fixed client ID: IDs are shared by all listeners, so a known one would let any
+        # device disconnect the aggregator. The broker assigns a random one.
         return aiomqtt.Client(
             hostname=settings.broker_host,
             port=settings.broker_port,

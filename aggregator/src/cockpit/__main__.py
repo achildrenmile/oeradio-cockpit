@@ -6,11 +6,11 @@ import sys
 
 import structlog
 
-from . import schemas
+from . import health, schemas
 from .app import run
 from .config import Settings
 
-USAGE = "usage: python -m cockpit (run | schemas export [--out DIR])"
+USAGE = "usage: python -m cockpit (run | healthcheck | schemas export [--out DIR])"
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -18,6 +18,10 @@ def main(argv: list[str] | None = None) -> None:
     if args[:1] == ["schemas"]:
         schemas.main(args[1:])
         return
+    if args == ["healthcheck"]:
+        settings = Settings()
+        path = settings.health_file
+        sys.exit(0 if path and health.is_alive(path, settings.interval_status) else 1)
     if args != ["run"]:
         sys.exit(USAGE)
     settings = Settings()

@@ -40,7 +40,13 @@ async def _run(settings: Settings, http: httpx.AsyncClient, stop: asyncio.Event 
     workers = [asyncio.create_task(r.run(), name=r.source.name) for r in runners]
     workers.append(
         asyncio.create_task(
-            run_status(runners, publisher.publish, settings.interval_status, settings.motd),
+            run_status(
+                runners,
+                publisher.publish,
+                settings.interval_status,
+                settings.motd,
+                settings.health_file,
+            ),
             name="status",
         )
     )

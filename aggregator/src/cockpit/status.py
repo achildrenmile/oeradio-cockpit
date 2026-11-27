@@ -2,8 +2,9 @@
 
 import asyncio
 from collections.abc import Awaitable, Callable, Sequence
+from pathlib import Path
 
-from . import __version__
+from . import __version__, health
 from .config import DATA_TOPICS
 from .models import Message, Status, now
 from .sources import SourceRunner
@@ -21,7 +22,10 @@ async def run_status(
     publish: Callable[[str, Message], Awaitable[None]],
     interval: float,
     motd: str | None,
+    health_file: Path | None = None,
 ) -> None:
     while True:
         await publish("status", build_status(runners, motd))
+        if health_file:
+            health.beat(health_file)
         await asyncio.sleep(interval)
