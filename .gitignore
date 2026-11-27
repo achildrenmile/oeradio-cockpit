@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+dist/
+*.egg-info/
+
+# ESP-IDF
+firmware/build/
+firmware/managed_components/
+firmware/sdkconfig
+firmware/sdkconfig.old
+firmware/dependencies.lock
+
+# Secrets – niemals committen
+.env
+*.env
+secrets/
+*.pem
+*.key
+deploy/**/secret*.yaml
+!deploy/**/secret*.example.yaml
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
