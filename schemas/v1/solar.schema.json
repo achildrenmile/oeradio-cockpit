@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "BandCondition": {
+      "properties": {
+        "b": {
+          "title": "B",
+          "type": "string"
+        },
+        "day": {
+          "enum": [
+            "good",
+            "fair",
+            "poor"
+          ],
+          "title": "Day",
+          "type": "string"
+        },
+        "night": {
+          "enum": [
+            "good",
+            "fair",
+            "poor"
+          ],
+          "title": "Night",
+          "type": "string"
+        }
+      },
+      "required": [
+        "b",
+        "day",
+        "night"
+      ],
+      "title": "BandCondition",
+      "type": "object"
+    },
+    "Vhf": {
+      "properties": {
+        "aurora": {
+          "title": "Aurora",
+          "type": "boolean"
+        },
+        "es_eu": {
+          "title": "Es Eu",
+          "type": "string"
+        }
+      },
+      "required": [
+        "aurora",
+        "es_eu"
+      ],
+      "title": "Vhf",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "v": {
+      "const": 1,
+      "default": 1,
+      "title": "V",
+      "type": "integer"
+    },
+    "ts": {
+      "title": "Ts",
+      "type": "integer"
+    },
+    "src_ts": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Src Ts"
+    },
+    "sfi": {
+      "title": "Sfi",
+      "type": "integer"
+    },
+    "ssn": {
+      "title": "Ssn",
+      "type": "integer"
+    },
+    "a": {
+      "title": "A",
+      "type": "integer"
+    },
+    "k": {
+      "title": "K",
+      "type": "integer"
+    },
+    "xray": {
+      "title": "Xray",
+      "type": "string"
+    },
+    "wind": {
+      "title": "Wind",
+      "type": "integer"
+    },
+    "bands": {
+      "items": {
+        "$ref": "#/$defs/BandCondition"
+      },
+      "title": "Bands",
+      "type": "array"
+    },
+    "vhf": {
+      "$ref": "#/$defs/Vhf"
+    }
+  },
+  "required": [
+    "v",
+    "ts",
+    "sfi",
+    "ssn",
+    "a",
+    "k",
+    "xray",
+    "wind",
+    "bands",
+    "vhf"
+  ],
+  "title": "Solar",
+  "type": "object"
+}

@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "MeshMessage": {
+      "description": "A message from a public channel. Direct messages must never end up here.",
+      "properties": {
+        "t": {
+          "title": "T",
+          "type": "integer"
+        },
+        "from": {
+          "title": "From",
+          "type": "string"
+        },
+        "ch": {
+          "title": "Ch",
+          "type": "string"
+        },
+        "txt": {
+          "maxLength": 80,
+          "title": "Txt",
+          "type": "string"
+        }
+      },
+      "required": [
+        "t",
+        "from",
+        "ch",
+        "txt"
+      ],
+      "title": "MeshMessage",
+      "type": "object"
+    },
+    "Repeater": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "seen": {
+          "title": "Seen",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name",
+        "seen"
+      ],
+      "title": "Repeater",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "v": {
+      "const": 1,
+      "default": 1,
+      "title": "V",
+      "type": "integer"
+    },
+    "ts": {
+      "title": "Ts",
+      "type": "integer"
+    },
+    "src_ts": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Src Ts"
+    },
+    "nodes_online": {
+      "minimum": 0,
+      "title": "Nodes Online",
+      "type": "integer"
+    },
+    "repeaters_online": {
+      "minimum": 0,
+      "title": "Repeaters Online",
+      "type": "integer"
+    },
+    "recent": {
+      "items": {
+        "$ref": "#/$defs/MeshMessage"
+      },
+      "maxItems": 10,
+      "title": "Recent",
+      "type": "array"
+    },
+    "top_repeaters": {
+      "items": {
+        "$ref": "#/$defs/Repeater"
+      },
+      "maxItems": 5,
+      "title": "Top Repeaters",
+      "type": "array"
+    }
+  },
+  "required": [
+    "v",
+    "ts",
+    "nodes_online",
+    "repeaters_online",
+    "recent",
+    "top_repeaters"
+  ],
+  "title": "Mesh",
+  "type": "object"
+}

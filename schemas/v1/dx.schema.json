@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "DxSpot": {
+      "properties": {
+        "t": {
+          "title": "T",
+          "type": "integer"
+        },
+        "dx": {
+          "title": "Dx",
+          "type": "string"
+        },
+        "f": {
+          "title": "F",
+          "type": "integer"
+        },
+        "b": {
+          "title": "B",
+          "type": "string"
+        },
+        "m": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "M"
+        },
+        "de": {
+          "title": "De",
+          "type": "string"
+        },
+        "cmt": {
+          "anyOf": [
+            {
+              "maxLength": 30,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cmt"
+        },
+        "dxcc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dxcc"
+        }
+      },
+      "required": [
+        "t",
+        "dx",
+        "f",
+        "b",
+        "de"
+      ],
+      "title": "DxSpot",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "v": {
+      "const": 1,
+      "default": 1,
+      "title": "V",
+      "type": "integer"
+    },
+    "ts": {
+      "title": "Ts",
+      "type": "integer"
+    },
+    "src_ts": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Src Ts"
+    },
+    "max": {
+      "default": 40,
+      "maximum": 40,
+      "title": "Max",
+      "type": "integer"
+    },
+    "spots": {
+      "items": {
+        "$ref": "#/$defs/DxSpot"
+      },
+      "maxItems": 40,
+      "title": "Spots",
+      "type": "array"
+    }
+  },
+  "required": [
+    "v",
+    "ts",
+    "spots"
+  ],
+  "title": "Dx",
+  "type": "object"
+}

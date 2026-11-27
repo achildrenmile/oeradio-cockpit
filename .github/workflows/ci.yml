@@ -86,6 +86,19 @@ jobs:
     needs: changes
     if: needs.changes.outputs.schemas == 'true'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: aggregator
     steps:
-      - name: Drift check (placeholder)
-        run: echo "Schema drift check is enabled in phase 02."
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.4.0
+        with:
+          python-version: "3.12"
+      - run: uv sync --locked
+      - name: Drift check
+        run: |
+          rm -f ../schemas/v1/*.schema.json
+          uv run python -m cockpit schemas export
+          # Intent-to-add makes new, uncommitted schema files show up in the diff.
+          git add --intent-to-add ../schemas
+          git diff --exit-code ../schemas

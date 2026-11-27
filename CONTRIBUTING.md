@@ -37,7 +37,13 @@ Code, Bezeichner und Code-Kommentare auf Englisch. Doku, ADRs und UI-Texte auf D
 
 ### Aggregator
 
-_Platzhalter, wird in Phase 02 ergänzt._
+```sh
+cd aggregator
+uv sync
+uv run ruff check && uv run mypy --strict src && uv run pytest
+```
+
+Starten mit lokalem Broker: siehe [`aggregator/README.md`](aggregator/README.md).
 
 ### Firmware
 

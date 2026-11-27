@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "NewsItem": {
+      "properties": {
+        "t": {
+          "title": "T",
+          "type": "integer"
+        },
+        "title": {
+          "maxLength": 90,
+          "title": "Title",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "t",
+        "title",
+        "url"
+      ],
+      "title": "NewsItem",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "v": {
+      "const": 1,
+      "default": 1,
+      "title": "V",
+      "type": "integer"
+    },
+    "ts": {
+      "title": "Ts",
+      "type": "integer"
+    },
+    "src_ts": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Src Ts"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/$defs/NewsItem"
+      },
+      "maxItems": 8,
+      "title": "Items",
+      "type": "array"
+    }
+  },
+  "required": [
+    "v",
+    "ts",
+    "items"
+  ],
+  "title": "News",
+  "type": "object"
+}
