@@ -26,7 +26,7 @@ Die Längen zählen Zeichen, nicht Bytes.
 | alle | `src_ts` | |
 | `status` | `motd`, `offline`; im Last Will fehlen `agg` und `ok` | `motd` 80 |
 | `solar` | – | |
-| `pota` | `park`, `loc`, `m`, `cmt` | `spots` 40, `park` 40, `cmt` 30 |
+| `pota` | `park`, `loc`, `m`, `cmt` | `spots` 20, `park` 40, `cmt` 30 |
 | `dx` | `m`, `cmt`, `dxcc` | `spots` 40, `cmt` 30 |
 | `mesh` | – | `recent` 10, `top_repeaters` 5, `txt` 80 |
 | `news` | – | `items` 8, `title` 90 |
@@ -56,7 +56,7 @@ Zustände: `good | fair | poor`.
 
 ### `oeradio/cockpit/v1/pota`
 ```json
-{"v":1,"ts":0,"max":40,"spots":[
+{"v":1,"ts":0,"max":20,"spots":[
  {"id":123,"t":1764268700,"act":"OE8YML/P","ref":"AT-0123","park":"Naturpark Dobratsch","loc":"AT-KA",
   "f":14285,"b":"20m","m":"SSB","sp":"OE8XYZ","cmt":"QRT 15z"}]}
 ```

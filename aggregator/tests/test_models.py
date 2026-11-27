@@ -38,10 +38,11 @@ def test_lists_are_capped_keeping_the_first_items() -> None:
     assert [item.t for item in news.items] == list(range(8))
 
 
-@pytest.mark.parametrize("model", [Pota, Dx])
-def test_max_cannot_exceed_contract(model: type[Pota] | type[Dx]) -> None:
+@pytest.mark.parametrize(("model", "limit"), [(Pota, 20), (Dx, 40)])
+def test_max_cannot_exceed_contract(model: type[Pota] | type[Dx], limit: int) -> None:
+    assert model(ts=0, spots=[]).max == limit
     with pytest.raises(ValidationError):
-        model(ts=0, max=41, spots=[])
+        model(ts=0, max=limit + 1, spots=[])
 
 
 def test_oversized_spot_lists_drop_the_tail_to_fit() -> None:
@@ -80,9 +81,10 @@ def test_oversized_spot_lists_drop_the_tail_to_fit() -> None:
         ]
         * 100,
     )
-    for message in (pota, dx):
-        assert len(message.encoded()) <= MAX_BYTES
-        assert 25 < len(message.spots) <= 40
+    assert len(pota.encoded()) <= MAX_BYTES
+    assert len(pota.spots) == 20
+    assert len(dx.encoded()) <= MAX_BYTES
+    assert 25 < len(dx.spots) <= 40
 
 
 def test_wire_format_is_compact_and_uses_from() -> None:

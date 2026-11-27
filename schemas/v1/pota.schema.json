@@ -119,8 +119,8 @@
       "title": "Src Ts"
     },
     "max": {
-      "default": 40,
-      "maximum": 40,
+      "default": 20,
+      "maximum": 20,
       "title": "Max",
       "type": "integer"
     },
@@ -128,7 +128,7 @@
       "items": {
         "$ref": "#/$defs/PotaSpot"
       },
-      "maxItems": 40,
+      "maxItems": 20,
       "title": "Spots",
       "type": "array"
     }

@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field, model_validator
 
 from .base import Message, capped, text
 
-MAX_SPOTS = 40
+MAX_SPOTS = 20
 PARK_MAX = 40
 COMMENT_MAX = 30
 
