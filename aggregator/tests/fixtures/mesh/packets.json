@@ -1,0 +1,31 @@
+[
+ {
+  "type": "PACKET",
+  "packet_type": "4",
+  "decoded": {
+   "advert_parse_ok": true,
+   "public_key": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1",
+   "name": "Test-Repeater",
+   "mode": "Repeater"
+  }
+ },
+ {
+  "type": "PACKET",
+  "packet_type": "4",
+  "decoded": {
+   "advert_parse_ok": true,
+   "public_key": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+   "name": "Test-Handgerät",
+   "mode": "Companion"
+  }
+ },
+ {
+  "type": "PACKET",
+  "packet_type": "1",
+  "raw": "0543",
+  "decoded": {}
+ },
+ {
+  "type": "STATUS"
+ }
+]

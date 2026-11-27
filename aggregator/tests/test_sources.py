@@ -1,3 +1,4 @@
+import httpx
 import pytest
 
 from cockpit.config import DATA_TOPICS, Settings
@@ -85,13 +86,47 @@ async def test_demo_data_matches_model_and_size_target(topic: str) -> None:
 
 
 def test_sources_from_environment(monkeypatch: pytest.MonkeyPatch) -> None:
+    http = httpx.AsyncClient()
     monkeypatch.setenv("COCKPIT_SOURCES", " demo ,")
     monkeypatch.setenv("COCKPIT_INTERVAL_DX", "5")
-    sources = build_sources(Settings())
+    sources = build_sources(Settings(), http)
     assert [s.name for s in sources] == list(DATA_TOPICS)
     assert {s.name: s.interval for s in sources}["dx"] == 5
+
+    monkeypatch.setenv("COCKPIT_SOURCES", "solar,pota,dx,news,mesh,demo")
+    monkeypatch.setenv("COCKPIT_DX_CALLSIGN", "N0CALL")
+    monkeypatch.setenv("COCKPIT_MESH_HOST", "broker.invalid")
+    sources = build_sources(Settings(), http)
+    assert [s.name for s in sources] == list(DATA_TOPICS)
+    assert not any(isinstance(s, DemoSource) for s in sources)
+
+    monkeypatch.setenv("COCKPIT_SOURCES", "news")
+    assert [s.name for s in build_sources(Settings(), http)] == ["news"]
     monkeypatch.setenv("COCKPIT_SOURCES", "")
-    assert build_sources(Settings()) == []
+    assert build_sources(Settings(), http) == []
     monkeypatch.setenv("COCKPIT_SOURCES", "nope")
     with pytest.raises(ValueError, match="nope"):
-        build_sources(Settings())
+        build_sources(Settings(), http)
+
+
+@pytest.mark.parametrize(("source", "missing"), [("dx", "DX_CALLSIGN"), ("mesh", "MESH_HOST")])
+def test_missing_configuration_is_reported(
+    monkeypatch: pytest.MonkeyPatch, source: str, missing: str
+) -> None:
+    monkeypatch.setenv("COCKPIT_SOURCES", source)
+    monkeypatch.delenv(f"COCKPIT_{missing}", raising=False)
+    with pytest.raises(ValueError, match=missing):
+        build_sources(Settings(), httpx.AsyncClient())
+
+
+def test_private_mesh_channels_are_rejected(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("COCKPIT_MESH_CHANNELS", "public,intern")
+    with pytest.raises(ValueError, match="intern"):
+        Settings()
+
+
+async def test_buffer_sources_do_not_back_off() -> None:
+    source = Flaky()
+    source.fail, source.backoff = True, False
+    runner = SourceRunner(source, discard)
+    assert [await runner.run_once() for _ in range(4)] == [100] * 4

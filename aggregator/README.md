@@ -2,8 +2,8 @@
 
 Der Python-Dienst `cockpit` publiziert kompaktes JSON per MQTT (retained, QoS 1) nach dem
 [Topic-Vertrag](../docs/mqtt-topics.md), siehe auch [ADR 0002](../docs/adr/0002-python-aggregator.md).
-Derzeit gibt es nur die Quelle `demo` mit erfundenen Daten. Die echten Quellen folgen in
-[Phase 03](../prompts/03-aggregator-sources.md), das Container-Image in [Phase 04](../prompts/04-broker-deploy.md).
+Quellen: `solar`, `pota`, `dx`, `mesh`, `news` ([Details](docs/sources.md)) und `demo` mit erfundenen Daten.
+Das Container-Image folgt in [Phase 04](../prompts/04-broker-deploy.md).
 
 ## Lokal starten
 
@@ -22,6 +22,12 @@ COCKPIT_SOURCES=demo uv run python -m cockpit run
 mosquitto_sub -t 'oeradio/cockpit/#' -v
 ```
 
+Mit echten Daten (für `dx` ein eigenes Rufzeichen setzen):
+
+```sh
+COCKPIT_SOURCES=solar,pota,dx,news COCKPIT_DX_CALLSIGN=<rufzeichen> uv run python -m cockpit run
+```
+
 Beim Beenden (Strg+C oder SIGTERM) publiziert der Dienst `offline` auf `…/status`.
 
 ## Konfiguration
@@ -34,8 +40,8 @@ Beim Beenden (Strg+C oder SIGTERM) publiziert der Dienst `offline` auf `…/stat
 | `COCKPIT_BROKER_PASSWORD` | – | Passwort (nie ins Repo) |
 | `COCKPIT_BROKER_TLS` | `false` | TLS mit den System-Zertifikaten |
 | `COCKPIT_TOPIC_PREFIX` | `oeradio/cockpit/v1` | Topic-Präfix |
-| `COCKPIT_SOURCES` | `demo` | Aktive Quellen, mit Komma getrennt |
-| `COCKPIT_INTERVAL_SOLAR` | `1800` | Sekunden |
+| `COCKPIT_SOURCES` | `demo` | Aktive Quellen, mit Komma getrennt; `demo` füllt die nicht genannten Topics |
+| `COCKPIT_INTERVAL_SOLAR` | `3600` | Sekunden |
 | `COCKPIT_INTERVAL_POTA` | `90` | Sekunden |
 | `COCKPIT_INTERVAL_DX` | `15` | Sekunden |
 | `COCKPIT_INTERVAL_MESH` | `30` | Sekunden |
@@ -43,6 +49,16 @@ Beim Beenden (Strg+C oder SIGTERM) publiziert der Dienst `offline` auf `…/stat
 | `COCKPIT_INTERVAL_STATUS` | `30` | Sekunden |
 | `COCKPIT_MOTD` | – | Kurzmeldung im Status (max. 80 Zeichen) |
 | `COCKPIT_LOG_LEVEL` | `INFO` | `DEBUG`, `INFO`, `WARNING`, `ERROR` |
+| `COCKPIT_SOLAR_URL`, `COCKPIT_POTA_URL`, `COCKPIT_NEWS_URL` | siehe Quellen | Endpunkte |
+| `COCKPIT_POTA_EUROPE` | europäische Programme | POTA-Präfixe, die behalten werden |
+| `COCKPIT_POTA_NEIGHBOURS` | `DE,IT,SI,HU,CZ,SK,CH` | Reihenfolge nach Österreich |
+| `COCKPIT_DX_HOST` / `_PORT` | `dxspider.co.uk` / `7300` | DX-Cluster |
+| `COCKPIT_DX_CALLSIGN` | – | Pflicht für `dx` |
+| `COCKPIT_MESH_HOST` / `_PORT` | – / `1883` | Observer-Broker, Host ist Pflicht für `mesh` |
+| `COCKPIT_MESH_USER` / `_PASSWORD` / `_TLS` | – / – / `false` | Anmeldung (nie ins Repo) |
+| `COCKPIT_MESH_TOPIC` | `meshcore/+/+/packets` | Paket-Topic |
+| `COCKPIT_MESH_CHANNELS` | `public` | `public` und `#kanal`, mit Komma getrennt |
+| `COCKPIT_MESH_WINDOW_HOURS` | `24` | Fenster für „online“ |
 
 ## Entwickeln
 

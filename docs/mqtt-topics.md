@@ -25,7 +25,7 @@ Die Längen zählen Zeichen, nicht Bytes.
 |---|---|---|
 | alle | `src_ts` | |
 | `status` | `motd`, `offline`; im Last Will fehlen `agg` und `ok` | `motd` 80 |
-| `solar` | – | |
+| `solar` | `ssn`, `a`, `k`, `xray`, `wind` | `bands` kann leer sein |
 | `pota` | `park`, `loc`, `m`, `cmt` | `spots` 20, `park` 40, `cmt` 30 |
 | `dx` | `m`, `cmt`, `dxcc` | `spots` 40, `cmt` 30 |
 | `mesh` | – | `recent` 10, `top_repeaters` 5, `txt` 80 |
@@ -79,6 +79,7 @@ Der Aggregator dedupliziert (gleiche DX/Band innerhalb von 5 min) und bündelt U
  "recent":[{"t":1764268600,"from":"OE8YML-Büro","ch":"Public","txt":"Test Dobratsch"}],
  "top_repeaters":[{"name":"Dobratsch","seen":1764268750}]}
 ```
+`nodes_online` zählt alle gehörten Nodes einschließlich der Repeater (Fenster: Default 24 h). `recent.t` ist die Empfangszeit.
 `recent.txt` kürzt der Aggregator auf max. 80 Zeichen. Es kommen **nur öffentliche Kanäle** vor, niemals Direktnachrichten.
 
 ### `oeradio/cockpit/v1/news`

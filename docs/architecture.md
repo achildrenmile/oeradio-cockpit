@@ -48,7 +48,7 @@ Für gerätespezifische Credentials gibt es später eine Option (siehe ADR 0003)
 
 | Quelle | Methode | Intervall | Topic |
 |---|---|---|---|
-| hamqsl.com Solar-XML | HTTP-Poll | 30 min | `oeradio/cockpit/v1/solar` |
+| hamqsl.com Solar-XML | HTTP-Poll | 60 min | `oeradio/cockpit/v1/solar` |
 | api.pota.app Spots | HTTP-Poll | 90 s | `oeradio/cockpit/v1/pota` |
 | DX-Cluster | Telnet-Stream, gebündelt | 15 s | `oeradio/cockpit/v1/dx` |
 | MeshCore Observer | MQTT-Subscribe → aggregiert | 30 s | `oeradio/cockpit/v1/mesh` |

@@ -6,12 +6,14 @@ import signal
 from collections.abc import Sequence
 from typing import Any
 
+import httpx
 import structlog
 
 from . import __version__
 from .config import Settings
 from .publisher import Publisher
-from .sources import SourceRunner, build_sources
+from .sources import Source, SourceRunner, build_sources
+from .sources.http import make_client
 from .status import run_status
 
 log = structlog.get_logger(__name__)
@@ -19,8 +21,14 @@ log = structlog.get_logger(__name__)
 
 async def run(settings: Settings, stop: asyncio.Event | None = None) -> None:
     """Run until ``stop`` is set (by default on SIGINT or SIGTERM)."""
+    async with make_client() as http:
+        await _run(settings, http, stop)
+
+
+async def _run(settings: Settings, http: httpx.AsyncClient, stop: asyncio.Event | None) -> None:
     publisher = Publisher(settings)
-    runners = [SourceRunner(source, publisher.publish) for source in build_sources(settings)]
+    sources = build_sources(settings, http)
+    runners = [SourceRunner(source, publisher.publish) for source in sources]
     if stop is None:
         stop = asyncio.Event()
         loop = asyncio.get_running_loop()
@@ -36,6 +44,12 @@ async def run(settings: Settings, stop: asyncio.Event | None = None) -> None:
             name="status",
         )
     )
+    # Polling sources return from listen() at once, so only streaming ones are watched.
+    workers += [
+        asyncio.create_task(s.listen(), name=f"{s.name}-listen")
+        for s in sources
+        if type(s).listen is not Source.listen
+    ]
     stopping = asyncio.create_task(stop.wait(), name="stop")
     try:
         done, _ = await asyncio.wait(

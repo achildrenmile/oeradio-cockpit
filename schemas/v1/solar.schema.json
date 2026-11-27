@@ -81,24 +81,64 @@
       "type": "integer"
     },
     "ssn": {
-      "title": "Ssn",
-      "type": "integer"
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Ssn"
     },
     "a": {
-      "title": "A",
-      "type": "integer"
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "A"
     },
     "k": {
-      "title": "K",
-      "type": "integer"
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "K"
     },
     "xray": {
-      "title": "Xray",
-      "type": "string"
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Xray"
     },
     "wind": {
-      "title": "Wind",
-      "type": "integer"
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Wind"
     },
     "bands": {
       "items": {
@@ -115,11 +155,6 @@
     "v",
     "ts",
     "sfi",
-    "ssn",
-    "a",
-    "k",
-    "xray",
-    "wind",
     "bands",
     "vhf"
   ],

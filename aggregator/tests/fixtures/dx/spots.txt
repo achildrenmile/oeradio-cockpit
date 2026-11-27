@@ -1,0 +1,5 @@
+DX de AF4PX:     21355.0  7Q2TB        CCC 7Q*                        1933Z
+DX de IW2HWN:     3573.0  OO0O         73                             1933Z
+DX de E73Y:       3508.9  ZA3A                                        1933Z
+DX de KO4FX:     14281.0  KO4FX        POTA US-0708 - WWFF KFF-0708   1933Z
+DX de F4HGF:     14133.0  F4ABC        USB JN18PC>JN16EQ              1933Z

@@ -21,9 +21,15 @@ class Source(ABC):
 
     name: str
     interval: float
+    # Sources that only snapshot an internal buffer set this to False: backing off
+    # would delay recovery without sparing any external service.
+    backoff: bool = True
 
     @abstractmethod
     async def fetch(self) -> Message: ...
+
+    async def listen(self) -> None:  # noqa: B027 - optional hook
+        """Long running task of streaming sources; polling sources have none."""
 
 
 class SourceRunner:
@@ -52,7 +58,8 @@ class SourceRunner:
         except Exception as error:
             self.failures += 1
             # Never retry faster than the regular interval, to spare external services.
-            delay = backoff_delay(self.failures, self.source.interval, BACKOFF_CAP)
+            cap = BACKOFF_CAP if self.source.backoff else self.source.interval
+            delay = backoff_delay(self.failures, self.source.interval, cap)
             log.warning(
                 "source_failed",
                 source=self.source.name,
