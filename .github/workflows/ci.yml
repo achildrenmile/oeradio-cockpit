@@ -32,6 +32,7 @@ jobs:
             firmware:
               - 'firmware/**'
               - 'schemas/**'
+              - 'docs/mqtt-topics.md'
               - '.github/workflows/ci.yml'
             schemas:
               - 'schemas/**'
@@ -82,11 +83,13 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Host tests
+        shell: bash
         working-directory: firmware
         run: |
-          cc -std=c11 -Wall -Wextra -Werror -Icomponents/board \
-            test_host/test_board_math.c components/board/board_math.c -o /tmp/board_math
-          /tmp/board_math
+          . "$IDF_PATH/export.sh"
+          cmake -S test_host -B /tmp/host
+          cmake --build /tmp/host
+          ctest --test-dir /tmp/host --output-on-failure
       - name: Build
         shell: bash
         working-directory: firmware

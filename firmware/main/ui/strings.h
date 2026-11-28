@@ -2,7 +2,75 @@
 // ASCII only until the project fonts with umlauts arrive (phase 08).
 #pragma once
 
-#define STR_HWTEST_TITLE "oeradio.at - Hardwaretest"
+// Status bar
+#define STR_BAR_NO_WIFI "kein WLAN"
+#define STR_BAR_SEARCHING "suche WLAN"
+#define STR_BAR_WIFI_FMT LV_SYMBOL_WIFI " %.8s %d"
+#define STR_BAR_CONNECTING_FMT LV_SYMBOL_WIFI " %.8s ..."
+#define STR_BAR_MQTT_OK LV_SYMBOL_OK " MQTT"
+#define STR_BAR_MQTT_OFF LV_SYMBOL_CLOSE " MQTT"
+#define STR_BAR_MQTT_RETRY_FMT LV_SYMBOL_CLOSE " MQTT %d s"
+#define STR_BAR_SERVER_OFFLINE LV_SYMBOL_WARNING " Server offline"
+#define STR_BAR_UPDATE LV_SYMBOL_WARNING " Update empf."
+#define STR_BAR_TIME_FMT "%02d:%02dz"
+#define STR_BAR_NO_TIME "--:--"
+#define STR_BAR_BATTERY_FMT "%d%%"
+
+// Common
+#define STR_BACK "Zurueck"
+#define STR_NEXT "Weiter"
+#define STR_SAVE "Speichern"
+#define STR_SAVE_FAILED "Speichern fehlgeschlagen"
+
+// Clock
+#define STR_CLOCK_UTC_FMT "%02d:%02d:%02d UTC"
+#define STR_CLOCK_LOCAL_FMT "Lokal %02d:%02d  %02d.%02d.%04d"
+#define STR_CLOCK_WAITING "Warte auf Zeit ..."
+#define STR_CLOCK_STATION_FMT "%s  %s"
+#define STR_CLOCK_DATA_FMT "Daten: %s"
+#define STR_CLOCK_NO_DATA "noch keine"
+#define STR_SETTINGS "Einstellungen"
+
+// Settings
+#define STR_MENU_STATION "Rufzeichen und Locator"
+#define STR_MENU_WIFI "WLAN"
+#define STR_MENU_FILTER "Filter"
+#define STR_MENU_DISPLAY "Anzeige und Alarm"
+#define STR_MENU_ADVANCED "Erweitert"
+#define STR_MENU_HWTEST "Hardwaretest"
+#define STR_CALLSIGN "Rufzeichen"
+#define STR_LOCATOR "Locator (6-stellig)"
+#define STR_BAD_CALLSIGN "Ungueltiges Rufzeichen"
+#define STR_BAD_LOCATOR "Ungueltiger Locator, z. B. JN66ur"
+#define STR_WIZARD_CALLSIGN "Willkommen! Dein Rufzeichen:"
+#define STR_WIZARD_LOCATOR "Dein Standort:"
+#define STR_FILTER_BANDS "Baender (keines = alle)"
+#define STR_FILTER_MODES "Betriebsarten (keine = alle)"
+#define STR_FILTER_PREFIXES "Laender-Praefixe, z. B. OE,DL"
+#define STR_BAD_PREFIXES "Nur Buchstaben, Ziffern und Komma"
+#define STR_BRIGHTNESS "Helligkeit (klicken, rollen, lang druecken)"
+#define STR_ALARM "Alarm"
+#define STR_TIMEZONE "Zeitzone (POSIX)"
+#define STR_BROKER "Broker-Adresse"
+#define STR_BAD_TIMEZONE "Ungueltige Zeitzone"
+#define STR_BAD_BROKER "Adresse mit wss://, ws://, mqtts:// oder mqtt://"
+
+// Wi-Fi
+#define STR_WIFI_SAVED "Gespeicherte Netze (oben = zuerst)"
+#define STR_WIFI_NONE_SAVED "Noch kein WLAN gespeichert"
+#define STR_WIFI_SCAN "Netzwerk suchen"
+#define STR_WIFI_SCANNING "Suche ..."
+#define STR_WIFI_NOT_FOUND "Keine Netze gefunden"
+#define STR_WIFI_AP_FMT "%s  (%d dBm%s)"
+#define STR_WIFI_OPEN ", offen"
+#define STR_WIFI_RAISE "Nach oben"
+#define STR_WIFI_DELETE "Loeschen"
+#define STR_WIFI_PASSWORD_FMT "Passwort fuer %s"
+#define STR_WIFI_SHOW_PASSWORD "anzeigen"
+#define STR_WIFI_BAD_PASSWORD "Passwort: leer oder 8 bis 63 Zeichen"
+#define STR_WIFI_FULL "Liste voll, erst ein Netz loeschen"
+
+// Hardware test
 #define STR_TOUCH_FMT "Touch: %d, %d"
 #define STR_TOUCH_NONE "Touch: --"
 #define STR_TOUCH_MISSING "Touch: nicht gefunden"
@@ -13,5 +81,5 @@
 #define STR_BATTERY_FMT "Akku: %d mV (%d %%)"
 #define STR_BATTERY_NONE "Akku: --"
 #define STR_INPUT_HINT "Hier tippen"
-#define STR_BRIGHTNESS "Helligkeit"
+#define STR_HWTEST_BRIGHTNESS "Helligkeit"
 #define STR_KEY_LIGHT "Tastenlicht"

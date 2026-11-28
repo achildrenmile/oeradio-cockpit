@@ -35,7 +35,8 @@ services:
       - auth:/mosquitto/auth:ro
       - data:/mosquitto/data
     ports:
-      - "127.0.0.1:9001:9001"
+      # Set COCKPIT_WS_BIND=0.0.0.0 to test with a device in the LAN.
+      - "${COCKPIT_WS_BIND:-127.0.0.1}:9001:9001"
 
   aggregator:
     build: ../../aggregator

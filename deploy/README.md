@@ -19,6 +19,14 @@ MQTT_WRITER_PASSWORD=local-test-only uv run deploy/scripts/ws-smoke.py ws://loca
 docker compose -f deploy/compose/docker-compose.yml down -v
 ```
 
+Für Tests mit einem T-Deck im LAN den Port auch nach außen öffnen (nur lesender Listener, Demo-Daten):
+
+```sh
+COCKPIT_WS_BIND=0.0.0.0 docker compose -f deploy/compose/docker-compose.yml up -d --build
+```
+
+Am Gerät unter Einstellungen → Erweitert als Broker `ws://<lan-ip>:9001` eintragen.
+
 ## Broker
 
 | Listener | Zugriff | Auth |
@@ -33,7 +41,7 @@ Geräte-Variante B (gemeinsamer User): in `mosquitto.conf` die markierten Zeilen
 `device.passwd` ins Secret `mosquitto-auth` aufnehmen.
 
 Client-IDs gelten über alle Listener. Wer eine ID kennt, kann diesen Client trennen. Der Aggregator
-nutzt deshalb eine zufällige ID, und die Firmware soll das ebenfalls tun.
+und die Firmware nutzen deshalb IDs mit Zufallsanteil.
 
 ## Ins GitOps-Repo einbinden
 

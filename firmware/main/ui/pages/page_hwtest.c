@@ -1,19 +1,21 @@
-#include "page_hwtest.h"
-
+// Diagnostics for display, touch, keyboard, trackball, backlight and battery.
 #include <ctype.h>
 
+#include "pages.h"
+#include "settings_store.h"
 #include "strings.h"
+#include "ui.h"
 
-static const board_t *s_board;
 static lv_obj_t *s_touch, *s_key, *s_trackball, *s_battery;
 
 static void refresh(lv_timer_t *timer)
 {
-    static int ticks;
+    static unsigned ticks;
+    const board_t *board = ui_board();
 
-    if (s_board->touch && lv_indev_get_state(s_board->touch) == LV_INDEV_STATE_PRESSED) {
+    if (board->touch && lv_indev_get_state(board->touch) == LV_INDEV_STATE_PRESSED) {
         lv_point_t point;
-        lv_indev_get_point(s_board->touch, &point);
+        lv_indev_get_point(board->touch, &point);
         lv_label_set_text_fmt(s_touch, STR_TOUCH_FMT, (int)point.x, (int)point.y);
     }
     const uint32_t key = board_last_key();
@@ -48,55 +50,38 @@ static void key_light_changed(lv_event_t *event)
     board_keyboard_backlight_set(on ? 127 : 0);
 }
 
-static lv_obj_t *label(lv_obj_t *parent, const char *text, int x, int y)
+static void leave(lv_event_t *event)
 {
-    lv_obj_t *obj = lv_label_create(parent);
-    lv_label_set_text(obj, text);
-    lv_obj_set_pos(obj, x, y);
-    return obj;
+    static settings_t settings;
+    settings_store_get(&settings);
+    board_backlight_set(settings.brightness);
+    board_keyboard_backlight_set(0);
+    ui_show(ui_wizard() ? PAGE_WIZARD_CALLSIGN : PAGE_MENU);
 }
 
-void page_hwtest_create(const board_t *board)
+void page_hwtest_create(lv_obj_t *content)
 {
-    s_board = board;
+    const board_t *board = ui_board();
+    s_touch = ui_label(content, board->touch ? STR_TOUCH_NONE : STR_TOUCH_MISSING);
+    s_key = ui_label(content, board->keypad ? STR_KEY_NONE : STR_KEY_MISSING);
+    s_battery = ui_label(content, STR_BATTERY_NONE);
+    s_trackball = ui_label(content, "");
 
-    // Widgets join the default group, which the trackball and keyboard navigate.
-    lv_group_t *group = lv_group_create();
-    lv_group_set_default(group);
-    if (board->keypad) {
-        lv_indev_set_group(board->keypad, group);
-    }
-    if (board->encoder) {
-        lv_indev_set_group(board->encoder, group);
-    }
-
-    lv_obj_t *screen = lv_screen_active();
-    lv_obj_remove_flag(screen, LV_OBJ_FLAG_SCROLLABLE);
-
-    label(screen, STR_HWTEST_TITLE, 8, 6);
-    s_touch = label(screen, board->touch ? STR_TOUCH_NONE : STR_TOUCH_MISSING, 8, 28);
-    s_key = label(screen, board->keypad ? STR_KEY_NONE : STR_KEY_MISSING, 8, 48);
-    s_battery = label(screen, STR_BATTERY_NONE, 8, 68);
-    s_trackball = label(screen, "", 8, 88);
-
-    lv_obj_t *input = lv_textarea_create(screen);
-    lv_textarea_set_one_line(input, true);
+    lv_obj_t *input = ui_input(content, "", "", 64, NULL);
     lv_textarea_set_placeholder_text(input, STR_INPUT_HINT);
-    lv_obj_set_width(input, 304);
-    lv_obj_set_pos(input, 8, 128);
 
-    label(screen, STR_BRIGHTNESS, 8, 178);
-    lv_obj_t *slider = lv_slider_create(screen);
-    lv_slider_set_range(slider, 5, 100);  // never fully dark
+    ui_label(content, STR_HWTEST_BRIGHTNESS);
+    lv_obj_t *slider = lv_slider_create(content);
+    lv_slider_set_range(slider, SETTINGS_MIN_BRIGHTNESS, 100);  // never fully dark
     lv_slider_set_value(slider, 100, LV_ANIM_OFF);
-    lv_obj_set_width(slider, 180);
-    lv_obj_set_pos(slider, 110, 181);
+    lv_obj_set_width(slider, LV_PCT(90));
+    lv_obj_set_style_margin_all(slider, 8, 0);
     lv_obj_add_event_cb(slider, brightness_changed, LV_EVENT_VALUE_CHANGED, NULL);
 
-    label(screen, STR_KEY_LIGHT, 8, 212);
-    lv_obj_t *toggle = lv_switch_create(screen);
-    lv_obj_set_pos(toggle, 110, 208);
+    ui_label(content, STR_KEY_LIGHT);
+    lv_obj_t *toggle = lv_switch_create(content);
     lv_obj_add_event_cb(toggle, key_light_changed, LV_EVENT_VALUE_CHANGED, NULL);
 
-    lv_timer_create(refresh, 100, NULL);
+    ui_button(content, STR_BACK, leave, NULL);
+    ui_page_timer(refresh, 100);
 }
