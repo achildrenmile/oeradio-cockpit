@@ -47,4 +47,4 @@ Starten mit lokalem Broker: siehe [`aggregator/README.md`](aggregator/README.md)
 
 ### Firmware
 
-_Platzhalter, wird in Phase 05 ergänzt._
+Siehe [`firmware/README.md`](firmware/README.md): `idf.py set-target esp32s3 && idf.py build` mit ESP-IDF 5.5.
